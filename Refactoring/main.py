@@ -62,29 +62,64 @@ def table_setting(driver):
     col = test.split(' ')
     return col
 
-def call_year(driver, year=None):
+def set_year_list(driver):
     year_option = '#selectYear.select-control'  # CSS 선택자
     year_opt = driver.find_element(By.CSS_SELECTOR, year_option)
     year_options = driver.find_elements(By.CSS_SELECTOR, '#selectYear.select-control > option')
     teams_select = Select(year_opt)
-    year_li = year_opt.text
-    year_list = year_li.split('\n')
-    y_keys = [ option.text for option in year_options[1:1+5] ]  # You can use 2024 - 2020
-    if year is not None:
-        year_opt.send_keys( year )
-        time.sleep(1)
-        return driver
-    else:
-        for y in y_keys:
-            print(y)
-            year_opt = driver.find_element(By.CSS_SELECTOR, year_option)
-            year_opt.send_keys( y )   
-            time.sleep(1)
-            return driver
+    year_list = year_opt.text
+    year_list = year_list.split('\n')
+    year_list = [ option.text for option in year_options[1:1+5]]
+    return year_list
 
+def set_league_list(driver):
+    league_option = '#selectMeetSeq.select-control'  # CSS 선택자
+    league_opt = driver.find_element(By.CSS_SELECTOR, league_option)
+    league_options = driver.find_elements(By.CSS_SELECTOR, '#selectMeetSeq.select-control > option')
+    league_select = Select(league_opt)
+    league_list = league_opt.text
+    league_list = league_list.split('\n')
+    league_list = [option.text for option in league_options[0:3]]
+    return league_list
+
+def set_team_list(driver):
+    team_option = '#selectTeamId.select-control'  # CSS Selector
+    team_opt = driver.find_element(By.CSS_SELECTOR, team_option)
+    team_options = driver.find_elements(By.CSS_SELECTOR, '#selectTeamId.select-control > option')
+    teams_select = Select(team_opt)
+    team_list = team_opt.text
+    team_list = team_list.split('\n')
+    team_list = [ option.text for option in team_options[1:] ]
+    return team_list
+
+def select_year_list(driver, year):
+    year_option = '#selectYear.select-control'  # CSS 선택자
+    year_opt = driver.find_element(By.CSS_SELECTOR, year_option)
+    year_opt.send_keys(year)
+    time.sleep(1)
+    return driver
+
+def select_league_list(driver, league):
+    league_option = '#selectMeetSeq.select-control'  # CSS 선택자
+    league_opt = driver.find_element(By.CSS_SELECTOR, league_option)
+    league_opt.send_keys(league)
+    time.sleep(1)
+    return driver
 
 if __name__ == "__main__":
     driver = call_web_driver("C:\\Users\\bewis\\OneDrive\\문서\\python module\\chrome-win64\\chrome.exe")
     table_setting(driver)
-    call_year(driver)   # You can add year only [2024:2020] EX) call_year(driver, 2020)
+
+    year_list = set_year_list(driver)
+    league_list = set_league_list(driver)
+    team_list = set_team_list(driver)
+
+    for year in year_list:
+        select_year_list(driver, year)
+        time.sleep(1)
+        for league in league_list:
+            select_league_list(driver, league)
+            time.sleep(1)
+
     driver.quit()
+

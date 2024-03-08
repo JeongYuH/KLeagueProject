@@ -62,9 +62,29 @@ def table_setting(driver):
     col = test.split(' ')
     return col
 
-def call_data(driver):
+def call_year(driver, year=None):
+    year_option = '#selectYear.select-control'  # CSS 선택자
+    year_opt = driver.find_element(By.CSS_SELECTOR, year_option)
+    year_options = driver.find_elements(By.CSS_SELECTOR, '#selectYear.select-control > option')
+    teams_select = Select(year_opt)
+    year_li = year_opt.text
+    year_list = year_li.split('\n')
+    y_keys = [ option.text for option in year_options[1:1+5] ]  # You can use 2024 - 2020
+    if year is not None:
+        year_opt.send_keys( year )
+        time.sleep(1)
+        return driver
+    else:
+        for y in y_keys:
+            print(y)
+            year_opt = driver.find_element(By.CSS_SELECTOR, year_option)
+            year_opt.send_keys( y )   
+            time.sleep(1)
+            return driver
+
 
 if __name__ == "__main__":
     driver = call_web_driver("C:\\Users\\bewis\\OneDrive\\문서\\python module\\chrome-win64\\chrome.exe")
-    print(table_setting(driver))
+    table_setting(driver)
+    call_year(driver)   # You can add year only [2024:2020] EX) call_year(driver, 2020)
     driver.quit()
